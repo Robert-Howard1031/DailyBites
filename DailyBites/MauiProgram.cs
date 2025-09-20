@@ -1,25 +1,39 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using DailyBites;
+using DailyBites.Services;
+using DailyBites.ViewModels;
+using DailyBites.Views;
+using Microsoft.Extensions.Configuration;
+using System.Reflection;
 
-namespace DailyBites
+public static class MauiProgram
 {
-    public static class MauiProgram
+    public static MauiApp CreateMauiApp()
     {
-        public static MauiApp CreateMauiApp()
-        {
-            var builder = MauiApp.CreateBuilder();
-            builder
-                .UseMauiApp<App>()
-                .ConfigureFonts(fonts =>
-                {
-                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                    fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                });
+        var builder = MauiApp.CreateBuilder();
 
-#if DEBUG
-    		builder.Logging.AddDebug();
-#endif
+        using var stream = FileSystem.OpenAppPackageFileAsync("appsettings.json").Result;
+        builder.Configuration.AddJsonStream(stream);
 
-            return builder.Build();
-        }
+        builder
+            .UseMauiApp<App>()
+            .ConfigureFonts(fonts =>
+            {
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+            });
+
+        // Register services/viewmodels/views
+        builder.Services.AddSingleton<IFirebaseAuthService, FirebaseAuthService>();
+        builder.Services.AddSingleton<ISettingsService, SettingsService>();
+
+        builder.Services.AddSingleton<SignupViewModel>();
+        builder.Services.AddSingleton<LoginViewModel>();
+        builder.Services.AddSingleton<HomeViewModel>();
+
+        builder.Services.AddSingleton<SignupPage>();
+        builder.Services.AddSingleton<LoginPage>();
+        builder.Services.AddSingleton<HomePage>();
+
+        return builder.Build();
     }
 }

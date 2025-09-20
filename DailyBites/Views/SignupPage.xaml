@@ -1,0 +1,64 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DailyBites.Views.SignupPage"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
+             Title="Sign Up">
+    <VerticalStackLayout>
+
+        <Label Text="Sign Up" FontSize="40" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,50"/>
+        
+        <HorizontalStackLayout Margin="30,0,0,30">
+            <BoxView Color="#ff3847" WidthRequest="7" HorizontalOptions="Start"/>
+            <VerticalStackLayout Margin="10,0,0,0">
+                <Label Text="Username" FontAttributes="Bold" FontSize="20" />
+                <Entry Text="{Binding Username}" WidthRequest="300"/>
+            </VerticalStackLayout>
+        </HorizontalStackLayout>
+        
+        <HorizontalStackLayout Margin="30,0,0,30">
+            <BoxView Color="#ff3847" WidthRequest="7" HorizontalOptions="Start"/>
+            <VerticalStackLayout Margin="10,0,0,0">
+                <Label Text="Email" FontAttributes="Bold" FontSize="20" />
+                <Entry Text="{Binding Email}" WidthRequest="300"/>
+            </VerticalStackLayout>
+        </HorizontalStackLayout>
+
+        <HorizontalStackLayout Margin="30,0,0,40">
+            <BoxView Color="#ff3847" WidthRequest="7" HorizontalOptions="Start" CornerRadius="30"/>
+            <VerticalStackLayout Margin="10,0,0,0">
+                <Label Text="Password" FontAttributes="Bold" FontSize="20"/>
+                <Entry Text="{Binding Password}" IsPassword="True" WidthRequest="300"/>
+            </VerticalStackLayout>
+        </HorizontalStackLayout>
+        
+        <HorizontalStackLayout Margin="30,0,0,40">
+            <BoxView Color="#ff3847" WidthRequest="7" HorizontalOptions="Start" CornerRadius="30"/>
+            <VerticalStackLayout Margin="10,0,0,0">
+                <Label Text="Confirm Password" FontAttributes="Bold" FontSize="20"/>
+                <Entry Text="{Binding ConfirmPassword}" IsPassword="True" WidthRequest="300"/>
+            </VerticalStackLayout>
+        </HorizontalStackLayout>
+
+        <Button 
+        Text="Sign Up" 
+        Command="{Binding SignUpCommand}" 
+        FontAttributes="Bold"
+        BackgroundColor="#ff3847" 
+        FontSize="20" Margin="10,0,0,10" 
+        HorizontalOptions="Center" 
+        HeightRequest="65" 
+        WidthRequest="300"/>
+
+        <Button 
+        Text="Already have an account? Sign In" 
+        Command="{Binding GoToLoginCommand}" 
+        FontSize="15" 
+        Margin="10,0,0,10" 
+        HorizontalOptions="Center" 
+        WidthRequest="300" 
+        TextColor="#007BFF" 
+        BackgroundColor="Transparent"/>
+
+    </VerticalStackLayout>
+</ContentPage>

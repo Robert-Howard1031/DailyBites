@@ -1,0 +1,60 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DailyBites.Views.LoginPage"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
+             Title="Login">
+   
+    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+
+        <Label Text="Log In" FontSize="40" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,0,0,50"/>
+
+        <HorizontalStackLayout Margin="30,0,0,30">
+            <BoxView Color="#ff3847" WidthRequest="7" HorizontalOptions="Start"/>
+            <VerticalStackLayout Margin="10,0,0,0">
+                <Label Text="Username or Email" FontAttributes="Bold" FontSize="20" />
+                <Entry Text="{Binding Identifier}" WidthRequest="300"/>
+            </VerticalStackLayout>
+        </HorizontalStackLayout>
+
+        <HorizontalStackLayout Margin="30,0,0,50">
+            <BoxView Color="#ff3847" WidthRequest="7" HorizontalOptions="Start" CornerRadius="30"/>
+            <VerticalStackLayout Margin="10,0,0,0">
+                <Label Text="Password" FontAttributes="Bold" FontSize="20"/>
+                <Entry Text="{Binding Password}" IsPassword="True" WidthRequest="300"/>
+            </VerticalStackLayout>
+        </HorizontalStackLayout>
+
+        <Button 
+        Text="Log In" 
+        Command="{Binding LoginCommand}" 
+        BackgroundColor="#ff3847" 
+        FontAttributes="Bold"
+        FontSize="20" 
+        Margin="10,0,0,10" 
+        HorizontalOptions="Center"
+        HeightRequest="65" 
+        WidthRequest="300"/>
+            
+        <Button 
+        Text="Forgot your password?" 
+        Command="{Binding ForgotPasswordCommand}" 
+        FontSize="15" 
+        Margin="0,0,0,0" 
+        HorizontalOptions="Center" 
+        WidthRequest="300" 
+        TextColor="#007BFF" 
+        BackgroundColor="Transparent"/>
+
+        <Button 
+        Text="Need an account? Sign Up" 
+        Command="{Binding GoToSignupCommand}" 
+        FontSize="15" 
+        Margin="10,0,0,10" 
+        HorizontalOptions="Center" 
+        WidthRequest="300" 
+        TextColor="#007BFF" 
+        BackgroundColor="Transparent"/>
+
+    </VerticalStackLayout>
+</ContentPage>

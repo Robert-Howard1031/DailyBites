@@ -1,15 +1,20 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<Shell
-    x:Class="DailyBites.AppShell"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:DailyBites"
-    Shell.FlyoutBehavior="Flyout"
-    Title="DailyBites">
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:views="clr-namespace:DailyBites.Views"
+       x:Class="DailyBites.AppShell"
+       FlyoutBehavior="Disabled">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <!-- Direct ShellContent (no flyout) -->
+    <ShellContent Title="Signup"
+                  ContentTemplate="{DataTemplate views:SignupPage}"
+                  Route="SignupPage" />
+
+    <ShellContent Title="Login"
+                  ContentTemplate="{DataTemplate views:LoginPage}"
+                  Route="LoginPage" />
+
+    <ShellContent Title="Home"
+                  ContentTemplate="{DataTemplate views:HomePage}"
+                  Route="HomePage" />
 
 </Shell>
