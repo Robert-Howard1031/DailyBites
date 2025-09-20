@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1085006143451",
+    "project_id": "dailybites-ca068",
+    "storage_bucket": "dailybites-ca068.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1085006143451:android:6ccd5f6d6c5fed5853d1fe",
+        "android_client_info": {
+          "package_name": "com.dailybites.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXcTttWmzL6Fx3deiU_wMpXEAW08rcyYM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
