@@ -26,6 +26,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IFirebaseAuthService, FirebaseAuthService>();
         builder.Services.AddSingleton<ISettingsService, SettingsService>();
 
+        builder.Services.AddSingleton<BaseViewModel>();
         builder.Services.AddSingleton<SignupViewModel>();
         builder.Services.AddSingleton<LoginViewModel>();
         builder.Services.AddSingleton<HomeViewModel>();

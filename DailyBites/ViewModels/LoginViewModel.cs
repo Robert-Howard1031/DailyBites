@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace DailyBites.ViewModels;
 
-public partial class LoginViewModel : ObservableObject
+public partial class LoginViewModel : BaseViewModel
 {
     private readonly IFirebaseAuthService _firebaseAuthService;
     private readonly ISettingsService _settingsService;

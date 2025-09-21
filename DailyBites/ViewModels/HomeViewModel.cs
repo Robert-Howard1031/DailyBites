@@ -4,7 +4,7 @@ using DailyBites.Services;
 
 namespace DailyBites.ViewModels;
 
-public partial class HomeViewModel : ObservableObject
+public partial class HomeViewModel : BaseViewModel
 {
     private readonly ISettingsService _settingsService;
 

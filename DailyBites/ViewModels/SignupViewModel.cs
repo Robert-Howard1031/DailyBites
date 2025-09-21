@@ -6,7 +6,7 @@ using System.Net.Http.Json;
 
 namespace DailyBites.ViewModels;
 
-public partial class SignupViewModel : ObservableObject
+public partial class SignupViewModel : BaseViewModel
 {
     private readonly IFirebaseAuthService _firebaseAuthService;
     private readonly IConfiguration _config;
