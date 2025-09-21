@@ -5,12 +5,12 @@
              Shell.TabBarIsVisible="False"
              Title="Login">
    
-    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+    <VerticalStackLayout VerticalOptions="Center">
 
         <Label Text="Log In" FontSize="40" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,0,0,50"/>
 
         <HorizontalStackLayout Margin="30,0,0,30">
-            <BoxView Color="#ff3847" WidthRequest="7" HorizontalOptions="Start"/>
+            <BoxView WidthRequest="7" HorizontalOptions="Start"/>
             <VerticalStackLayout Margin="10,0,0,0">
                 <Label Text="Username or Email" FontAttributes="Bold" FontSize="20" />
                 <Entry Text="{Binding Identifier}" WidthRequest="300"/>
@@ -18,7 +18,7 @@
         </HorizontalStackLayout>
 
         <HorizontalStackLayout Margin="30,0,0,50">
-            <BoxView Color="#ff3847" WidthRequest="7" HorizontalOptions="Start" CornerRadius="30"/>
+            <BoxView WidthRequest="7" HorizontalOptions="Start" CornerRadius="30"/>
             <VerticalStackLayout Margin="10,0,0,0">
                 <Label Text="Password" FontAttributes="Bold" FontSize="20"/>
                 <Entry Text="{Binding Password}" IsPassword="True" WidthRequest="300"/>
@@ -28,7 +28,6 @@
         <Button 
         Text="Log In" 
         Command="{Binding LoginCommand}" 
-        BackgroundColor="#ff3847" 
         FontAttributes="Bold"
         FontSize="20" 
         Margin="10,0,0,10" 
@@ -46,15 +45,21 @@
         TextColor="#007BFF" 
         BackgroundColor="Transparent"/>
 
-        <Button 
-        Text="Need an account? Sign Up" 
-        Command="{Binding GoToSignupCommand}" 
-        FontSize="15" 
-        Margin="10,0,0,10" 
-        HorizontalOptions="Center" 
-        WidthRequest="300" 
-        TextColor="#007BFF" 
-        BackgroundColor="Transparent"/>
-
+        <StackLayout HorizontalOptions="Center" Margin="0,10,0,0">
+            <Label HorizontalOptions="Center">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Need an account? " 
+                      TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+                        <Span Text="Sign Up"
+                      TextColor="#007BFF">
+                            <Span.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToSignupCommand}" />
+                            </Span.GestureRecognizers>
+                        </Span>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+        </StackLayout>
     </VerticalStackLayout>
 </ContentPage>
