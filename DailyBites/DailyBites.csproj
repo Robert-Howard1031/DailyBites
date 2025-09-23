@@ -43,7 +43,7 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.png"/>
+		<MauiIcon Include="Resources\AppIcon\appicon.png" />
 
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
@@ -67,6 +67,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Views\ExploreFeedPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\FriendFeedPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\HomePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -86,5 +92,14 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 			<BuildAction>Content</BuildAction>
 		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Views\ExploreFeedPage.xaml.cs">
+	    <DependentUpon>ExploreFeedPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\FriendFeedPage.xaml.cs">
+	    <DependentUpon>FriendFeedPage.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 </Project>

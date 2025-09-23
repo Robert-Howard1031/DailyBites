@@ -1,9 +1,53 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="DailyBites.Views.HomePage"
+             xmlns:views="clr-namespace:DailyBites.Views"
              Title="Home">
-    <VerticalStackLayout Padding="24" Spacing="14">
-        <Label Text="{Binding WelcomeText}" FontSize="22" HorizontalOptions="Center" />
-        <Button Text="Log Out" Command="{Binding LogoutCommand}" />
-    </VerticalStackLayout>
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Floating pill at top center -->
+        <Border Grid.Row="0"
+               Padding="4"
+               Margin="0,20,0,10"
+               BackgroundColor="White"
+               StrokeShape="25"
+               Shadow="True"
+               HorizontalOptions="Center"
+               VerticalOptions="Start"
+               WidthRequest="220"
+               HeightRequest="50">
+
+            <Grid ColumnDefinitions="*,*"
+                  VerticalOptions="Center">
+
+                <Button x:Name="FriendButton"
+                        Text="Friends"
+                        Clicked="OnFriendsClicked"
+                        BackgroundColor="#1976d2"
+                        TextColor="White"
+                        CornerRadius="20"
+                        Margin="2,0"
+                        />
+
+                <Button x:Name="ExploreButton"
+                        Text="Explore"
+                        Clicked="OnExploreClicked"
+                        Grid.Column="1"
+                        BackgroundColor="Transparent"
+                        TextColor="Black"
+                        CornerRadius="20"
+                        Margin="2,0"
+                        />
+            </Grid>
+        </Border>
+
+        <!-- Both views stacked in content area -->
+        <views:FriendFeedPage x:Name="FriendFeedViewControl"
+                       Grid.Row="1"
+                       IsVisible="True" />
+
+        <views:ExploreFeedPage x:Name="ExploreFeedViewControl"
+                       Grid.Row="1"
+                       IsVisible="False" />
+    </Grid>
 </ContentPage>

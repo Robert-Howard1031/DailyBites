@@ -2,7 +2,14 @@
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
        xmlns:views="clr-namespace:DailyBites.Views"
        x:Class="DailyBites.AppShell"
-       FlyoutBehavior="Disabled">
+       Shell.FlyoutBehavior="Disabled"
+       Shell.BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource OffBlack}}"
+       Shell.TitleColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+       Shell.TabBarIsVisible="True"
+       Shell.TabBarBackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource OffBlack}}"
+       Shell.TabBarTitleColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+       Shell.TabBarUnselectedColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}"
+       Shell.TabBarForegroundColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}">
 
     <!-- Direct ShellContent (no flyout) -->
     <ShellContent Title="Signup"
@@ -12,9 +19,26 @@
     <ShellContent Title="Login"
                   ContentTemplate="{DataTemplate views:LoginPage}"
                   Route="LoginPage" />
+    <TabBar>
+        <ShellContent Title="Home"
+                      Icon="home_tab.png"
+                      ContentTemplate="{DataTemplate views:HomePage}"
+                      Route="HomePage" />
+        
+        <ShellContent Title="Search"
+              Icon="search_tab.png"
+              ContentTemplate="{DataTemplate views:HomePage}"
+              Route="SearchPage" />
+        
+        <ShellContent Title="Requests"
+              Icon="request_tab.png"
+              ContentTemplate="{DataTemplate views:HomePage}"
+              Route="RequestPage" />
+        
+        <ShellContent Title="Profile"
+              Icon="profile_tab.png"
+              ContentTemplate="{DataTemplate views:HomePage}"
+              Route="YourProfilePage" />
 
-    <ShellContent Title="Home"
-                  ContentTemplate="{DataTemplate views:HomePage}"
-                  Route="HomePage" />
-
+    </TabBar>
 </Shell>
