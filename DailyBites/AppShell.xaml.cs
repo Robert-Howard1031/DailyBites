@@ -10,7 +10,7 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(SignupPage), typeof(SignupPage));
         Routing.RegisterRoute(nameof(LoginPage), typeof(LoginPage));
         Routing.RegisterRoute(nameof(HomePage), typeof(HomePage));
-        Routing.RegisterRoute(nameof(FriendFeedPage), typeof(FriendFeedPage));
-        Routing.RegisterRoute(nameof(ExploreFeedPage), typeof(ExploreFeedPage));
+        Routing.RegisterRoute(nameof(FriendFeedView), typeof(FriendFeedView));
+        Routing.RegisterRoute(nameof(ExploreFeedView), typeof(ExploreFeedView));
     }
 }

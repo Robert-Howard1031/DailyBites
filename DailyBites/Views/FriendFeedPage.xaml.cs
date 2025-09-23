@@ -2,9 +2,9 @@ using DailyBites.ViewModels;
 
 namespace DailyBites.Views;
 
-public partial class FriendFeedPage : ContentPage
+public partial class FriendFeedView : ContentView
 {
-    public FriendFeedPage(FriendFeedViewModel vm)
+    public FriendFeedView(FriendFeedViewModel vm)
     {
         InitializeComponent();
         BindingContext = vm;

@@ -1,25 +1,32 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DailyBites.Services;
 
 namespace DailyBites.ViewModels;
 
 public partial class HomeViewModel : BaseViewModel
 {
-    private readonly ISettingsService _settingsService;
+    [ObservableProperty] 
+    private bool _isFriendSelected = true;
+    [ObservableProperty] 
+    private bool _isExploreSelected = false;
 
-    [ObservableProperty] private string _welcomeText;
+    public event Action<string>? FeedChanged; // "Friends" or "Explore"
 
-    public HomeViewModel(ISettingsService settingsService)
+    [RelayCommand]
+    private void ShowFriends()
     {
-        _settingsService = settingsService;
-        _welcomeText = $"Welcome, {_settingsService.Username} 👋";
+        if (_isFriendSelected) return;
+        _isFriendSelected = true;
+        _isExploreSelected = false;
+        FeedChanged?.Invoke("Friends");
     }
 
     [RelayCommand]
-    private async Task Logout()
+    private void ShowExplore()
     {
-        _settingsService.Logout();
-        await Shell.Current.GoToAsync($"//LoginPage");
+        if (_isExploreSelected) return;
+        _isFriendSelected = false;
+        _isExploreSelected = true;
+        FeedChanged?.Invoke("Explore");
     }
 }

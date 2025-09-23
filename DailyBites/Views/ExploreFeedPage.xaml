@@ -1,9 +1,12 @@
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="DailyBites.Views.ExploreFeedPage"
-             Title="Home">
-    <VerticalStackLayout Padding="24" Spacing="14">
-        <Label Text="{Binding WelcomeText}" FontSize="22" HorizontalOptions="Center" />
-        <Button Text="Log Out" Command="{Binding LogoutCommand}" />
-    </VerticalStackLayout>
-</ContentPage>
+             x:Class="DailyBites.Views.ExploreFeedView">
+
+    <Grid Padding="15">
+        <Label Text="Explore Feed"
+               FontSize="24"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"/>
+    </Grid>
+</ContentView>
