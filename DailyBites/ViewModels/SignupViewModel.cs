@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using DailyBites.Services;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http.Json;
+using System.Text.RegularExpressions;
 
 namespace DailyBites.ViewModels;
 
@@ -12,10 +13,14 @@ public partial class SignupViewModel : BaseViewModel
     private readonly IConfiguration _config;
     private readonly HttpClient _http = new();
 
-    [ObservableProperty] private string _username;
-    [ObservableProperty] private string _email;
-    [ObservableProperty] private string _password;
-    [ObservableProperty] private string _confirmPassword;
+    [ObservableProperty]
+    private string _username;
+    [ObservableProperty]
+    private string _email;
+    [ObservableProperty]
+    private string _password;
+    [ObservableProperty]
+    private string _confirmPassword;
 
     public SignupViewModel(IFirebaseAuthService firebaseAuthService, IConfiguration config)
     {
@@ -40,7 +45,48 @@ public partial class SignupViewModel : BaseViewModel
             return;
         }
 
-        // 🔹 Create Firebase Auth user
+        var lowerUsername = _username.Trim().ToLower();
+
+        
+        if (!Regex.IsMatch(lowerUsername, @"^[a-z0-9._-]+$"))
+        {
+            await Shell.Current.DisplayAlert("Error",
+                "Username can only contain letters, numbers, underscores (_), hyphens (-), or dots (.)",
+                "OK");
+            return;
+        }
+
+        var projectId = _config["Firebase:ProjectId"];
+
+        var queryUrl =
+            $"https://firestore.googleapis.com/v1/projects/{projectId}/databases/(default)/documents:runQuery";
+
+        var queryBody = new
+        {
+            structuredQuery = new
+            {
+                from = new[] { new { collectionId = "users" } },
+                where = new
+                {
+                    fieldFilter = new
+                    {
+                        field = new { fieldPath = "username" },
+                        op = "EQUAL",
+                        value = new { stringValue = lowerUsername }
+                    }
+                }
+            }
+        };
+
+        var queryResponse = await _http.PostAsJsonAsync(queryUrl, queryBody);
+        var queryContent = await queryResponse.Content.ReadAsStringAsync();
+
+        if (queryContent.Contains("fields")) 
+        {
+            await Shell.Current.DisplayAlert("Error", "Username already taken", "OK");
+            return;
+        }
+
         var token = await _firebaseAuthService.SignupAsync(_email.Trim(), _password);
         if (token is null)
         {
@@ -48,23 +94,31 @@ public partial class SignupViewModel : BaseViewModel
             return;
         }
 
-        var projectId = _config["Firebase:ProjectId"];
+        var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+        var jwt = handler.ReadJwtToken(token);
+        var uid = jwt.Claims.FirstOrDefault(c => c.Type == "user_id")?.Value;
 
-        // 🔹 Save username + email to Firestore with Auth token
-        var url = $"https://firestore.googleapis.com/v1/projects/{projectId}/databases/(default)/documents/users";
+        if (string.IsNullOrEmpty(uid))
+        {
+            await Shell.Current.DisplayAlert("Error", "Could not get user ID", "OK");
+            return;
+        }
+
         _http.DefaultRequestHeaders.Authorization =
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
+        var url = $"https://firestore.googleapis.com/v1/projects/{projectId}/databases/(default)/documents/users/{uid}";
         var body = new
         {
             fields = new
             {
-                username = new { stringValue = _username.Trim() },
+                uid = new { stringValue = uid },
+                username = new { stringValue = lowerUsername },
                 email = new { stringValue = _email.Trim() }
             }
         };
 
-        var response = await _http.PostAsJsonAsync(url, body);
+        var response = await _http.PatchAsJsonAsync(url, body);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -73,7 +127,6 @@ public partial class SignupViewModel : BaseViewModel
             return;
         }
 
-        // 🔹 Send email verification
         await _firebaseAuthService.SendVerificationEmailAsync(token);
 
         await Shell.Current.DisplayAlert("Verify Email",

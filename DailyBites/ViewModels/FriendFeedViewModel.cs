@@ -8,7 +8,8 @@ public partial class FriendFeedViewModel : BaseViewModel
 {
     private readonly ISettingsService _settingsService;
 
-    [ObservableProperty] private string _welcomeText;
+    [ObservableProperty] 
+    private string _welcomeText;
 
     public FriendFeedViewModel(ISettingsService settingsService)
     {

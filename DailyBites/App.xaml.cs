@@ -31,7 +31,7 @@ public partial class App : Application
 
         // TODO: When the main page is created, uncomment the code below to navigate to the main page if the user is logged in.
         bool isUserLoggedIn = _settingsService.IsLoggedIn;
-        var page = isUserLoggedIn ? "//HomePage" : "//SignupPage";
+        var page = isUserLoggedIn ? "//HomePage" : "//LoginPage";
 
         //var page = "//LoginPage";
         await Shell.Current.GoToAsync(page);

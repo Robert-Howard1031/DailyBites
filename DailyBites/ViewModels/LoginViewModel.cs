@@ -4,6 +4,7 @@ using DailyBites.Services;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace DailyBites.ViewModels;
 
@@ -14,8 +15,10 @@ public partial class LoginViewModel : BaseViewModel
     private readonly IConfiguration _config;
     private readonly HttpClient _http = new();
 
-    [ObservableProperty] private string _identifier; // Username OR Email
-    [ObservableProperty] private string _password;
+    [ObservableProperty] 
+    private string _identifier; 
+    [ObservableProperty] 
+    private string _password;
 
     public LoginViewModel(
         IFirebaseAuthService firebaseAuthService,
@@ -41,18 +44,14 @@ public partial class LoginViewModel : BaseViewModel
 
         if (_identifier.Contains("@"))
         {
-            // 🔹 User typed an email
             emailToUse = _identifier.Trim();
 
-            // Look up username from Firestore
             usernameToUse = await LookupUsernameByEmail(emailToUse) ?? "";
         }
         else
         {
-            // 🔹 User typed a username
             usernameToUse = _identifier.Trim();
 
-            // Look up email from Firestore
             emailToUse = await LookupEmailByUsername(usernameToUse) ?? "";
 
             if (string.IsNullOrEmpty(emailToUse))
@@ -76,10 +75,14 @@ public partial class LoginViewModel : BaseViewModel
             return;
         }
 
-        // 🔹 Save correct values
+        var handler = new JwtSecurityTokenHandler();
+        var jwt = handler.ReadJwtToken(idToken);
+        var uid = jwt.Claims.FirstOrDefault(c => c.Type == "user_id")?.Value;
+
         _settingsService.IsLoggedIn = true;
         _settingsService.UserEmail = emailToUse;
         _settingsService.Username = usernameToUse;
+        _settingsService.Uid = uid ?? string.Empty;
 
         await Shell.Current.GoToAsync($"//HomePage");
     }

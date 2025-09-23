@@ -4,9 +4,13 @@
              x:Class="DailyBites.Views.FriendFeedView">
 
     <Grid Padding="15">
+        <VerticalStackLayout>
         <Label Text="Friend Feed"
                FontSize="24"
                HorizontalOptions="Center"
                VerticalOptions="Center"/>
+
+        <Button Command="{Binding LogoutCommand}" Text="Logout"/>
+        </VerticalStackLayout>
     </Grid>
 </ContentView>

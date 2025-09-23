@@ -7,6 +7,7 @@ public class SettingsService : ISettingsService
     private const string LoggedInKey = "IsLoggedIn";
     private const string EmailKey = "UserEmail";
     private const string UsernameKey = "Username";
+    private const string UidKey = "Uid";
 
     public bool IsLoggedIn
     {
@@ -25,11 +26,17 @@ public class SettingsService : ISettingsService
         get => Preferences.Get(UsernameKey, string.Empty);
         set => Preferences.Set(UsernameKey, value);
     }
+    public string Uid
+    {
+        get => Preferences.Get(UidKey, string.Empty);
+        set => Preferences.Set(UidKey, value);
+    }
 
     public void Logout()
     {
         Preferences.Remove(LoggedInKey);
         Preferences.Remove(EmailKey);
         Preferences.Remove(UsernameKey);
+        Preferences.Remove(UidKey);
     }
 }
