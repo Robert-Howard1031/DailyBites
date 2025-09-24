@@ -18,6 +18,10 @@ public partial class SignupViewModel : BaseViewModel
     [ObservableProperty]
     private string _email;
     [ObservableProperty]
+    private string _firstName;
+    [ObservableProperty]
+    private string _lastName;
+    [ObservableProperty]
     private string _password;
     [ObservableProperty]
     private string _confirmPassword;
@@ -33,7 +37,9 @@ public partial class SignupViewModel : BaseViewModel
     {
         if (string.IsNullOrWhiteSpace(_username) ||
             string.IsNullOrWhiteSpace(_email) ||
-            string.IsNullOrWhiteSpace(_password))
+            string.IsNullOrWhiteSpace(_password) ||
+            string.IsNullOrWhiteSpace(_firstName) ||
+            string.IsNullOrWhiteSpace(_lastName))
         {
             await Shell.Current.DisplayAlert("Error", "All fields are required", "OK");
             return;
@@ -113,7 +119,7 @@ public partial class SignupViewModel : BaseViewModel
 
         //  Pull default profile picture from config
         var defaultPic = _config["Firebase:DefaultProfilePicUrl"] ?? string.Empty;
-
+        var name = $"{FirstName} {LastName}";
         //  Save user to Firestore
         var url = $"https://firestore.googleapis.com/v1/projects/{projectId}/databases/(default)/documents/users/{uid}";
         var body = new
@@ -123,7 +129,8 @@ public partial class SignupViewModel : BaseViewModel
                 uid = new { stringValue = uid },
                 username = new { stringValue = lowerUsername },
                 email = new { stringValue = _email.Trim() },
-                profilePicUrl = new { stringValue = defaultPic } // ✅ default picture
+                name = new { stringValue = name.ToLower().Trim() },
+                profilePicUrl = new { stringValue = defaultPic }
             }
         };
 

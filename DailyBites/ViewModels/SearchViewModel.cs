@@ -101,6 +101,7 @@ public partial class SearchViewModel : BaseViewModel
             {
                 Uid = GetString("uid"),
                 Username = GetString("username"),
+                Name = GetString("name"),
                 Email = GetString("email"),
                 ProfilePicUrl = GetString("profilePicUrl")
             };

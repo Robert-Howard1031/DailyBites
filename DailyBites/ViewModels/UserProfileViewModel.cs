@@ -15,6 +15,8 @@ public partial class UserProfileViewModel : BaseViewModel
     private string _uid = string.Empty;
     [ObservableProperty] 
     private string _username = string.Empty;
+    [ObservableProperty]
+    private string _name = string.Empty;
     [ObservableProperty] 
     private string _email = string.Empty;
     [ObservableProperty] 
@@ -48,6 +50,7 @@ public partial class UserProfileViewModel : BaseViewModel
         }
 
         Username = GetString("username");
+        Name = GetString("name");
         Email = GetString("email");
         ProfilePicUrl = GetString("profilePicUrl");
 

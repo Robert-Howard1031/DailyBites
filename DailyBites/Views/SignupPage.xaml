@@ -2,11 +2,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="DailyBites.Views.SignupPage"
              Shell.NavBarIsVisible="False"
-             Shell.TabBarIsVisible="False"
-             Title="Sign Up">
+             Shell.TabBarIsVisible="False">
     <VerticalStackLayout VerticalOptions="Center">
 
         <Label Text="Sign Up" FontSize="40" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,50"/>
+        <HorizontalStackLayout>
+            <HorizontalStackLayout Margin="30,0,0,30">
+                <BoxView WidthRequest="7" HorizontalOptions="Start"/>
+                <VerticalStackLayout Margin="10,0,0,0">
+                    <Label Text="First Name" FontAttributes="Bold" FontSize="20" />
+                    <Entry Text="{Binding FirstName}" WidthRequest="150"/>
+                </VerticalStackLayout>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Margin="30,0,0,30">
+                <BoxView WidthRequest="7" HorizontalOptions="Start"/>
+                <VerticalStackLayout Margin="10,0,0,0">
+                    <Label Text="Last Name" FontAttributes="Bold" FontSize="20" />
+                    <Entry Text="{Binding LastName}" WidthRequest="150"/>
+                </VerticalStackLayout>
+            </HorizontalStackLayout>
+        </HorizontalStackLayout>
         
         <HorizontalStackLayout Margin="30,0,0,30">
             <BoxView WidthRequest="7" HorizontalOptions="Start"/>

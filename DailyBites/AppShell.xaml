@@ -12,11 +12,11 @@
        Shell.TabBarForegroundColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}">
 
     <!-- Direct ShellContent (no flyout) -->
-    <ShellContent Title="Signup"
+    <ShellContent 
                   ContentTemplate="{DataTemplate views:SignupPage}"
                   Route="SignupPage" />
 
-    <ShellContent Title="Login"
+    <ShellContent 
                   ContentTemplate="{DataTemplate views:LoginPage}"
                   Route="LoginPage" />
     <TabBar>
