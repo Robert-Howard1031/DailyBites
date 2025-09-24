@@ -33,7 +33,7 @@ public partial class LoginViewModel : BaseViewModel
     [RelayCommand]
     private async Task Login()
     {
-        if (string.IsNullOrWhiteSpace(_identifier) || string.IsNullOrWhiteSpace(_password))
+        if (string.IsNullOrWhiteSpace(_identifier.ToLower()) || string.IsNullOrWhiteSpace(_password))
         {
             await Shell.Current.DisplayAlert("Error", "Username/Email and password are required", "OK");
             return;
@@ -42,15 +42,15 @@ public partial class LoginViewModel : BaseViewModel
         string emailToUse;
         string usernameToUse;
 
-        if (_identifier.Contains("@"))
+        if (_identifier.ToLower().Contains("@"))
         {
-            emailToUse = _identifier.Trim();
+            emailToUse = _identifier.ToLower().Trim();
 
             usernameToUse = await LookupUsernameByEmail(emailToUse) ?? "";
         }
         else
         {
-            usernameToUse = _identifier.Trim();
+            usernameToUse = _identifier.ToLower().Trim();
 
             emailToUse = await LookupEmailByUsername(usernameToUse) ?? "";
 
@@ -80,8 +80,8 @@ public partial class LoginViewModel : BaseViewModel
         var uid = jwt.Claims.FirstOrDefault(c => c.Type == "user_id")?.Value;
 
         _settingsService.IsLoggedIn = true;
-        _settingsService.UserEmail = emailToUse;
-        _settingsService.Username = usernameToUse;
+        _settingsService.UserEmail = emailToUse.ToLower();
+        _settingsService.Username = usernameToUse.ToLower();
         _settingsService.Uid = uid ?? string.Empty;
 
         await Shell.Current.GoToAsync($"//HomePage");
