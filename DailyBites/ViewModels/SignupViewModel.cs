@@ -45,9 +45,10 @@ public partial class SignupViewModel : BaseViewModel
             return;
         }
 
+        // 🔹 Normalize username to lowercase
         var lowerUsername = _username.Trim().ToLower();
 
-        
+        // 🔹 Validate allowed characters
         if (!Regex.IsMatch(lowerUsername, @"^[a-z0-9._-]+$"))
         {
             await Shell.Current.DisplayAlert("Error",
@@ -58,6 +59,7 @@ public partial class SignupViewModel : BaseViewModel
 
         var projectId = _config["Firebase:ProjectId"];
 
+        //  Check if username already exists
         var queryUrl =
             $"https://firestore.googleapis.com/v1/projects/{projectId}/databases/(default)/documents:runQuery";
 
@@ -81,12 +83,13 @@ public partial class SignupViewModel : BaseViewModel
         var queryResponse = await _http.PostAsJsonAsync(queryUrl, queryBody);
         var queryContent = await queryResponse.Content.ReadAsStringAsync();
 
-        if (queryContent.Contains("fields")) 
+        if (queryContent.Contains("fields"))
         {
             await Shell.Current.DisplayAlert("Error", "Username already taken", "OK");
             return;
         }
 
+        // Create Firebase Auth user
         var token = await _firebaseAuthService.SignupAsync(_email.Trim(), _password);
         if (token is null)
         {
@@ -94,6 +97,7 @@ public partial class SignupViewModel : BaseViewModel
             return;
         }
 
+        //  Extract UID from JWT
         var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
         var jwt = handler.ReadJwtToken(token);
         var uid = jwt.Claims.FirstOrDefault(c => c.Type == "user_id")?.Value;
@@ -107,6 +111,10 @@ public partial class SignupViewModel : BaseViewModel
         _http.DefaultRequestHeaders.Authorization =
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
+        //  Pull default profile picture from config
+        var defaultPic = _config["Firebase:DefaultProfilePicUrl"] ?? string.Empty;
+
+        //  Save user to Firestore
         var url = $"https://firestore.googleapis.com/v1/projects/{projectId}/databases/(default)/documents/users/{uid}";
         var body = new
         {
@@ -114,7 +122,8 @@ public partial class SignupViewModel : BaseViewModel
             {
                 uid = new { stringValue = uid },
                 username = new { stringValue = lowerUsername },
-                email = new { stringValue = _email.Trim() }
+                email = new { stringValue = _email.Trim() },
+                profilePicUrl = new { stringValue = defaultPic } // ✅ default picture
             }
         };
 
@@ -127,6 +136,7 @@ public partial class SignupViewModel : BaseViewModel
             return;
         }
 
+        //  Send email verification
         await _firebaseAuthService.SendVerificationEmailAsync(token);
 
         await Shell.Current.DisplayAlert("Verify Email",

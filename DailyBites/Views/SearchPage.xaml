@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DailyBites.Views.SearchPage"
+             Title="Search"
+             Shell.NavBarIsVisible="False">
+
+    <VerticalStackLayout Padding="20" Spacing="15">
+
+        <!-- 🔍 Search -->
+        <SearchBar Placeholder="Search users…"
+                   Text="{Binding Query, Mode=TwoWay}"
+                   SearchCommand="{Binding SearchCommand}" />
+
+        <!-- 📋 Results -->
+        <CollectionView ItemsSource="{Binding Results}"
+                        SelectionMode="Single"
+                        SelectedItem="{Binding SelectedUser, Mode=TwoWay}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                            StrokeThickness="1"
+                            Padding="12"
+                            Margin="0,6"
+                            StrokeShape="RoundRectangle 10">
+                        <HorizontalStackLayout Spacing="14">
+                            <!-- Avatar placeholder -->
+                            <Image WidthRequest="42" HeightRequest="42" Aspect="AspectFill"
+                                     Source="{Binding ProfilePicUrl}"/>
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Username}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+                                <Label Text="{Binding Email}"
+                                       FontSize="12"
+                                       TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+                            </VerticalStackLayout>
+                        </HorizontalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </VerticalStackLayout>
+</ContentPage>

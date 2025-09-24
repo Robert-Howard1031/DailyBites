@@ -32,12 +32,16 @@ public static class MauiProgram
         builder.Services.AddSingleton<HomeViewModel>();
         builder.Services.AddSingleton<FriendFeedViewModel>();
         builder.Services.AddSingleton<ExploreFeedViewModel>();
+        builder.Services.AddSingleton<SearchViewModel>();
+        builder.Services.AddSingleton<UserProfileViewModel>();
 
         builder.Services.AddSingleton<SignupPage>();
         builder.Services.AddSingleton<LoginPage>();
         builder.Services.AddSingleton<HomePage>();
         builder.Services.AddSingleton<FriendFeedView>();
         builder.Services.AddSingleton<ExploreFeedView>();
+        builder.Services.AddSingleton<SearchPage>();
+        builder.Services.AddSingleton<UserProfilePage>();
 
         return builder.Build();
     }

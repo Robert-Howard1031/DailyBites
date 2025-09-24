@@ -27,7 +27,7 @@
         
         <ShellContent Title="Search"
               Icon="search_tab.png"
-              ContentTemplate="{DataTemplate views:HomePage}"
+              ContentTemplate="{DataTemplate views:SearchPage}"
               Route="SearchPage" />
         
         <ShellContent Title="Requests"
