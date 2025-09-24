@@ -7,12 +7,10 @@
 
     <VerticalStackLayout Padding="20" Spacing="15">
 
-        <!-- 🔍 Search -->
         <SearchBar Placeholder="Search users…"
                    Text="{Binding Query, Mode=TwoWay}"
                    SearchCommand="{Binding SearchCommand}" />
 
-        <!-- 📋 Results -->
         <CollectionView ItemsSource="{Binding Results}"
                         SelectionMode="Single"
                         SelectedItem="{Binding SelectedUser, Mode=TwoWay}">
@@ -24,7 +22,6 @@
                             Margin="0,6"
                             StrokeShape="RoundRectangle 10">
                         <HorizontalStackLayout Spacing="14">
-                            <!-- Avatar placeholder -->
                             <Image WidthRequest="42" HeightRequest="42" Aspect="AspectFill"
                                      Source="{Binding ProfilePicUrl}"/>
                             <VerticalStackLayout>
