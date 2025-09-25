@@ -26,22 +26,24 @@ public static class MauiProgram
         builder.Services.AddSingleton<IFirebaseAuthService, FirebaseAuthService>();
         builder.Services.AddSingleton<ISettingsService, SettingsService>();
 
-        builder.Services.AddSingleton<BaseViewModel>();
-        builder.Services.AddSingleton<SignupViewModel>();
-        builder.Services.AddSingleton<LoginViewModel>();
-        builder.Services.AddSingleton<HomeViewModel>();
-        builder.Services.AddSingleton<FriendFeedViewModel>();
-        builder.Services.AddSingleton<ExploreFeedViewModel>();
-        builder.Services.AddSingleton<SearchViewModel>();
-        builder.Services.AddSingleton<UserProfileViewModel>();
+        builder.Services.AddTransient<BaseViewModel>();
+        builder.Services.AddTransient<SignupViewModel>();
+        builder.Services.AddTransient<LoginViewModel>();
+        builder.Services.AddTransient<HomeViewModel>();
+        builder.Services.AddTransient<FriendFeedViewModel>();
+        builder.Services.AddTransient<ExploreFeedViewModel>();
+        builder.Services.AddTransient<SearchViewModel>();
+        builder.Services.AddTransient<UserProfileViewModel>();
+        builder.Services.AddTransient<PersonalProfileViewModel>();
 
-        builder.Services.AddSingleton<SignupPage>();
-        builder.Services.AddSingleton<LoginPage>();
-        builder.Services.AddSingleton<HomePage>();
-        builder.Services.AddSingleton<FriendFeedView>();
-        builder.Services.AddSingleton<ExploreFeedView>();
-        builder.Services.AddSingleton<SearchPage>();
-        builder.Services.AddSingleton<UserProfilePage>();
+        builder.Services.AddTransient<SignupPage>();
+        builder.Services.AddTransient<LoginPage>();
+        builder.Services.AddTransient<HomePage>();
+        builder.Services.AddTransient<FriendFeedView>();
+        builder.Services.AddTransient   <ExploreFeedView>();
+        builder.Services.AddTransient<SearchPage>();
+        builder.Services.AddTransient<UserProfilePage>();
+        builder.Services.AddTransient<PersonalProfilePage>();
 
         return builder.Build();
     }

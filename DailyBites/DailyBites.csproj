@@ -80,6 +80,9 @@
 	  <MauiXaml Update="Views\LoginPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\PersonalProfilePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\SearchPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -107,6 +110,9 @@
 	  </Compile>
 	  <Compile Update="Views\FriendFeedPage.xaml.cs">
 	    <DependentUpon>FriendFeedPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\PersonalProfilePage.xaml.cs">
+	    <DependentUpon>PersonalProfilePage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 </Project>
