@@ -20,22 +20,22 @@
                   ContentTemplate="{DataTemplate views:LoginPage}"
                   Route="LoginPage" />
     <TabBar>
-        <ShellContent Title="Home"
+        <ShellContent 
                       Icon="home_tab.png"
                       ContentTemplate="{DataTemplate views:HomePage}"
                       Route="HomePage" />
         
-        <ShellContent Title="Search"
+        <ShellContent 
               Icon="search_tab.png"
               ContentTemplate="{DataTemplate views:SearchPage}"
               Route="SearchPage" />
         
-        <ShellContent Title="Requests"
+        <ShellContent
               Icon="request_tab.png"
               ContentTemplate="{DataTemplate views:HomePage}"
               Route="RequestPage" />
         
-        <ShellContent Title="Profile"
+        <ShellContent
               Icon="profile_tab.png"
               ContentTemplate="{DataTemplate views:PersonalProfilePage}"
               Route="PersonalProfilePage" />

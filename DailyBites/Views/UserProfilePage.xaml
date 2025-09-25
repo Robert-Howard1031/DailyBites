@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="DailyBites.Views.UserProfilePage"
              Shell.NavBarIsVisible="True"
-             Shell.TabBarIsVisible="False">
+             Shell.TabBarIsVisible="True">
 
     <ScrollView>
         <VerticalStackLayout Padding="24" Spacing="16">
