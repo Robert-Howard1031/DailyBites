@@ -32,7 +32,7 @@
         
         <ShellContent
               Icon="request_tab.png"
-              ContentTemplate="{DataTemplate views:HomePage}"
+              ContentTemplate="{DataTemplate views:RequestsPage}"
               Route="RequestPage" />
         
         <ShellContent

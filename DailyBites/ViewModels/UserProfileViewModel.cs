@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Configuration;
-using System.Net.Http.Json;
 using System.Text.Json;
+using DailyBites.Services;
 
 namespace DailyBites.ViewModels;
 
@@ -10,12 +10,14 @@ public partial class UserProfileViewModel : BaseViewModel
 {
     private readonly IConfiguration _config;
     private readonly HttpClient _http = new();
+    private readonly IFriendService _friendService;
+    private readonly ISettingsService _settingsService;
 
     [ObservableProperty] 
     private string _uid = string.Empty;
     [ObservableProperty] 
     private string _username = string.Empty;
-    [ObservableProperty]
+    [ObservableProperty] 
     private string _name = string.Empty;
     [ObservableProperty] 
     private string _email = string.Empty;
@@ -24,9 +26,26 @@ public partial class UserProfileViewModel : BaseViewModel
     [ObservableProperty] 
     private int _friendCount;
 
-    public UserProfileViewModel(IConfiguration config)
+    [ObservableProperty] 
+    private string _friendButtonText = "Add Friend";
+    [ObservableProperty] 
+    private bool _showFriendButton = true;
+    [ObservableProperty] 
+    private bool _showAcceptReject = false;
+
+    public IAsyncRelayCommand FriendButtonCommand { get; }
+    public IAsyncRelayCommand AcceptCommand { get; }
+    public IAsyncRelayCommand RejectCommand { get; }
+
+    public UserProfileViewModel(IConfiguration config, IFriendService friendService, ISettingsService settingsService)
     {
         _config = config;
+        _friendService = friendService;
+        _settingsService = settingsService;
+
+        FriendButtonCommand = new AsyncRelayCommand(OnFriendButtonClicked);
+        AcceptCommand = new AsyncRelayCommand(OnAcceptClicked);
+        RejectCommand = new AsyncRelayCommand(OnRejectClicked);
     }
 
     public async Task LoadAsync()
@@ -54,16 +73,124 @@ public partial class UserProfileViewModel : BaseViewModel
         Email = GetString("email");
         ProfilePicUrl = GetString("profilePicUrl");
 
-        // friends array length (if exists)
+        // ----- Check friends -----
         if (fields.TryGetProperty("friends", out var friendsField) &&
             friendsField.TryGetProperty("arrayValue", out var arr) &&
             arr.TryGetProperty("values", out var vals))
         {
             FriendCount = vals.GetArrayLength();
+
+            if (vals.EnumerateArray().Any(v => v.GetProperty("stringValue").GetString() == _settingsService.Uid))
+            {
+                FriendButtonText = "Remove Friend";
+                ShowFriendButton = true;
+                ShowAcceptReject = false;
+                return;
+            }
         }
         else
         {
             FriendCount = 0;
+        }
+
+        // ----- Did YOU send them a request? -----
+        if (fields.TryGetProperty("friendRequests", out var requestsField) &&
+            requestsField.TryGetProperty("arrayValue", out var reqArr) &&
+            reqArr.TryGetProperty("values", out var reqVals))
+        {
+            foreach (var v in reqVals.EnumerateArray())
+            {
+                var requesterUid = v.GetProperty("stringValue").GetString();
+
+                if (requesterUid == _settingsService.Uid)
+                {
+                    FriendButtonText = "Request Sent";
+                    ShowFriendButton = true;
+                    ShowAcceptReject = false;
+                    return;
+                }
+
+                if (requesterUid == Uid && Uid == _settingsService.Uid)
+                {
+                    // edge case, ignore
+                }
+
+                // 🔹 If THEY sent YOU a request
+                if (requesterUid == _settingsService.Uid) continue;
+                if (Uid == _settingsService.Uid) continue;
+            }
+        }
+
+        // ----- Did THEY send YOU a request? -----
+        var myUrl = $"{projectId}/databases/(default)/documents/users/{_settingsService.Uid}";
+        var myRes = await _http.GetAsync($"https://firestore.googleapis.com/v1/projects/{myUrl}");
+        if (myRes.IsSuccessStatusCode)
+        {
+            using var myJson = await JsonDocument.ParseAsync(await myRes.Content.ReadAsStreamAsync());
+            if (myJson.RootElement.TryGetProperty("fields", out var myFields))
+            {
+                if (myFields.TryGetProperty("friendRequests", out var myReqField) &&
+                    myReqField.TryGetProperty("arrayValue", out var myReqArr) &&
+                    myReqArr.TryGetProperty("values", out var myReqVals))
+                {
+                    foreach (var v in myReqVals.EnumerateArray())
+                    {
+                        if (v.TryGetProperty("stringValue", out var sv) &&
+                            sv.GetString() == Uid)
+                        {
+                            ShowFriendButton = false;
+                            ShowAcceptReject = true;
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Default
+        FriendButtonText = "Add Friend";
+        ShowFriendButton = true;
+        ShowAcceptReject = false;
+    }
+
+    private async Task OnFriendButtonClicked()
+    {
+        if (FriendButtonText == "Add Friend")
+        {
+            var ok = await _friendService.SendFriendRequestAsync(_settingsService.Uid, Uid);
+            if (ok) FriendButtonText = "Request Sent";
+        }
+        else if (FriendButtonText == "Remove Friend")
+        {
+            var ok = await _friendService.RemoveFriendAsync(_settingsService.Uid, Uid);
+            if (ok) FriendButtonText = "Add Friend";
+        }
+        else if (FriendButtonText == "Request Sent")
+        {
+            var ok = await _friendService.RejectFriendRequestAsync(Uid, _settingsService.Uid);
+            if (ok) FriendButtonText = "Add Friend";
+        }
+    }
+
+    private async Task OnAcceptClicked()
+    {
+        var ok = await _friendService.AcceptFriendRequestAsync(_settingsService.Uid, Uid);
+        if (ok)
+        {
+            FriendButtonText = "Remove Friend";
+            ShowFriendButton = true;
+            ShowAcceptReject = false;
+        }
+    }
+
+    private async Task OnRejectClicked()
+    {
+        var ok = await _friendService.RejectFriendRequestAsync(_settingsService.Uid, Uid);
+        if (ok)
+        {
+            FriendButtonText = "Add Friend";
+            ShowFriendButton = true;
+            ShowAcceptReject = false;
         }
     }
 }

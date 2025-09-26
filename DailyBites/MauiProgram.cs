@@ -25,6 +25,8 @@ public static class MauiProgram
         // Register services/viewmodels/views
         builder.Services.AddSingleton<IFirebaseAuthService, FirebaseAuthService>();
         builder.Services.AddSingleton<ISettingsService, SettingsService>();
+        builder.Services.AddSingleton<IFriendService, FriendService>();
+
 
         builder.Services.AddTransient<BaseViewModel>();
         builder.Services.AddTransient<SignupViewModel>();
@@ -35,15 +37,17 @@ public static class MauiProgram
         builder.Services.AddTransient<SearchViewModel>();
         builder.Services.AddTransient<UserProfileViewModel>();
         builder.Services.AddTransient<PersonalProfileViewModel>();
+        builder.Services.AddTransient<RequestsViewModel>();
 
         builder.Services.AddTransient<SignupPage>();
         builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<HomePage>();
         builder.Services.AddTransient<FriendFeedView>();
-        builder.Services.AddTransient   <ExploreFeedView>();
+        builder.Services.AddTransient<ExploreFeedView>();
         builder.Services.AddTransient<SearchPage>();
         builder.Services.AddTransient<UserProfilePage>();
         builder.Services.AddTransient<PersonalProfilePage>();
+        builder.Services.AddTransient<RequestsPage>();
 
         return builder.Build();
     }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:DailyBites.ViewModels"
              x:Class="DailyBites.Views.SearchPage"
              Shell.NavBarIsVisible="False">
 
@@ -20,10 +21,19 @@
                             Padding="12"
                             Margin="0,6"
                             StrokeShape="RoundRectangle 10">
-                        <HorizontalStackLayout Spacing="14">
-                            <Image WidthRequest="42" HeightRequest="42" Aspect="AspectFill"
-                                     Source="{Binding ProfilePicUrl}"/>
-                            <VerticalStackLayout>
+                        <Grid ColumnDefinitions="Auto,*,Auto" VerticalOptions="Center">
+
+                            <!-- Profile Pic -->
+                            <Image Grid.Column="0"
+                                   WidthRequest="42"
+                                   HeightRequest="42"
+                                   Aspect="AspectFill"
+                                   Source="{Binding ProfilePicUrl}" />
+
+                            <!-- User Info -->
+                            <VerticalStackLayout Grid.Column="1"
+                                                 Padding="10,0"
+                                                 VerticalOptions="Center">
                                 <Label Text="{Binding Username}"
                                        FontSize="16"
                                        FontAttributes="Bold"
@@ -32,7 +42,22 @@
                                        FontSize="12"
                                        TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
                             </VerticalStackLayout>
-                        </HorizontalStackLayout>
+
+                            <!-- Always black action button -->
+                            <Button Grid.Column="2"
+                                    Text="{Binding FriendButtonText}"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SearchViewModel}}, Path=ToggleFriendCommand}"
+                                    CommandParameter="{Binding .}"
+                                    FontSize="12"
+                                    Padding="14,6"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                                    TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}"
+                                    CornerRadius="20"
+                                    HorizontalOptions="End"
+                                    VerticalOptions="Center"
+                                    WidthRequest="110"
+                                    HeightRequest="40"/>
+                        </Grid>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

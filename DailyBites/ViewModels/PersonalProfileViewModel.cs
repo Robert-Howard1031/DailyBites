@@ -13,28 +13,22 @@ public partial class PersonalProfileViewModel : BaseViewModel
     private readonly ISettingsService _settingsService;
     private readonly HttpClient _http = new();
 
-    [ObservableProperty] 
-    private string _uid = string.Empty;
-    [ObservableProperty] 
-    private string _username = string.Empty;
-    [ObservableProperty] 
-    private string _name = string.Empty;
-    [ObservableProperty] 
-    private string _email = string.Empty;
-    [ObservableProperty] 
-    private string _profilePicUrl = string.Empty;
-    [ObservableProperty] 
-    private int _friendCount;
+    [ObservableProperty] private string _uid = string.Empty;
+    [ObservableProperty] private string _username = string.Empty;
+    [ObservableProperty] private string _name = string.Empty;
+    [ObservableProperty] private string _email = string.Empty;
+    [ObservableProperty] private string _profilePicUrl = string.Empty;
+    [ObservableProperty] private int _friendCount;
 
     public PersonalProfileViewModel(IConfiguration config, ISettingsService settingsService)
     {
         _config = config;
         _settingsService = settingsService;
 
-        // get the current logged in uid from settings
+        // Get the current logged-in uid from settings
         _uid = _settingsService.Uid;
 
-        // auto-load
+        // Auto-load
         LoadCommand = new AsyncRelayCommand(LoadAsync);
         LoadCommand.Execute(null);
     }
@@ -67,11 +61,12 @@ public partial class PersonalProfileViewModel : BaseViewModel
         Email = GetString("email");
         ProfilePicUrl = GetString("profilePicUrl");
 
+        // Safely calculate friend count
         if (fields.TryGetProperty("friends", out var friendsField) &&
             friendsField.TryGetProperty("arrayValue", out var arr) &&
             arr.TryGetProperty("values", out var vals))
         {
-            FriendCount = vals.GetArrayLength();
+            FriendCount = vals.EnumerateArray().Count(); // count actual values
         }
         else
         {

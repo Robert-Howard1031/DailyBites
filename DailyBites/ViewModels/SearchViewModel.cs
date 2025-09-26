@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DailyBites.Models;
+using DailyBites.Services;
 using Microsoft.Extensions.Configuration;
 using System.Collections.ObjectModel;
 using System.Net.Http.Json;
@@ -11,18 +12,23 @@ namespace DailyBites.ViewModels;
 public partial class SearchViewModel : BaseViewModel
 {
     private readonly IConfiguration _config;
+    private readonly IFriendService _friendService;
+    private readonly ISettingsService _settingsService;
     private readonly HttpClient _http = new();
 
-    [ObservableProperty] 
-    private string _query = string.Empty;
-    [ObservableProperty] 
-    private ObservableCollection<UserResult> _results = new();
-    [ObservableProperty] 
-    private UserResult? _selectedUser;
+    [ObservableProperty] private string _query = string.Empty;
+    [ObservableProperty] private ObservableCollection<UserResult> _results = new();
+    [ObservableProperty] private UserResult? _selectedUser;
 
-    public SearchViewModel(IConfiguration config)
+    public IAsyncRelayCommand<UserResult> ToggleFriendCommand { get; }
+
+    public SearchViewModel(IConfiguration config, IFriendService friendService, ISettingsService settingsService)
     {
         _config = config;
+        _friendService = friendService;
+        _settingsService = settingsService;
+
+        ToggleFriendCommand = new AsyncRelayCommand<UserResult>(ToggleFriend);
     }
 
     [RelayCommand]
@@ -39,8 +45,6 @@ public partial class SearchViewModel : BaseViewModel
 
         var projectId = _config["Firebase:ProjectId"];
         var url = $"https://firestore.googleapis.com/v1/projects/{projectId}/databases/(default)/documents:runQuery";
-
-        // Prefix search: username >= q AND username < q + \uf8ff
         var end = q + "\uf8ff";
 
         var body = new
@@ -85,6 +89,8 @@ public partial class SearchViewModel : BaseViewModel
 
         using var json = await JsonDocument.ParseAsync(await res.Content.ReadAsStreamAsync());
 
+        var friends = await _friendService.GetFriendsAsync(_settingsService.Uid);
+
         foreach (var element in json.RootElement.EnumerateArray())
         {
             if (!element.TryGetProperty("document", out var doc)) continue;
@@ -103,11 +109,70 @@ public partial class SearchViewModel : BaseViewModel
                 Username = GetString("username"),
                 Name = GetString("name"),
                 Email = GetString("email"),
-                ProfilePicUrl = GetString("profilePicUrl")
+                ProfilePicUrl = GetString("profilePicUrl"),
+                FriendButtonText = "Add Friend"
             };
 
+            // 🚫 Skip self
+            if (result.Uid == _settingsService.Uid)
+                continue;
+
             if (!string.IsNullOrWhiteSpace(result.Username))
+            {
+                if (friends.Contains(result.Uid))
+                {
+                    result.FriendButtonText = "Remove Friend";
+                }
+                else
+                {
+                    // 🔹 Check if YOU are inside THEIR friendRequests
+                    var userUrl = $"https://firestore.googleapis.com/v1/projects/{projectId}/databases/(default)/documents/users/{result.Uid}";
+                    var userRes = await _http.GetAsync(userUrl);
+                    if (userRes.IsSuccessStatusCode)
+                    {
+                        using var userJson = await JsonDocument.ParseAsync(await userRes.Content.ReadAsStreamAsync());
+                        if (userJson.RootElement.TryGetProperty("fields", out var userFields) &&
+                            userFields.TryGetProperty("friendRequests", out var requestsField) &&
+                            requestsField.TryGetProperty("arrayValue", out var arr) &&
+                            arr.TryGetProperty("values", out var values))
+                        {
+                            foreach (var v in values.EnumerateArray())
+                            {
+                                if (v.TryGetProperty("stringValue", out var sv) &&
+                                    sv.GetString() == _settingsService.Uid)
+                                {
+                                    result.FriendButtonText = "Request Sent";
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
                 Results.Add(result);
+            }
+        }
+    }
+
+    private async Task ToggleFriend(UserResult user)
+    {
+        if (user == null || string.IsNullOrEmpty(_settingsService.Uid)) return;
+
+        if (user.FriendButtonText == "Add Friend")
+        {
+            var ok = await _friendService.SendFriendRequestAsync(_settingsService.Uid, user.Uid);
+            if (ok) user.FriendButtonText = "Request Sent";
+        }
+        else if (user.FriendButtonText == "Remove Friend")
+        {
+            var ok = await _friendService.RemoveFriendAsync(_settingsService.Uid, user.Uid);
+            if (ok) user.FriendButtonText = "Add Friend";
+        }
+        else if (user.FriendButtonText == "Request Sent")
+        {
+            // cancel pending request
+            var ok = await _friendService.RejectFriendRequestAsync(user.Uid, _settingsService.Uid);
+            if (ok) user.FriendButtonText = "Add Friend";
         }
     }
 

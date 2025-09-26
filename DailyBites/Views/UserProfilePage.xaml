@@ -7,19 +7,49 @@
 
     <ScrollView>
         <VerticalStackLayout Padding="24" Spacing="16">
-            
+
             <Image WidthRequest="96" HeightRequest="96" Aspect="AspectFill" HorizontalOptions="Center"
                    Source="{Binding ProfilePicUrl}">
                 <Image.Clip>
                     <EllipseGeometry Center="48,48" RadiusX="48" RadiusY="48" />
                 </Image.Clip>
             </Image>
-            
-            <Label Text="{Binding Username}" FontAttributes="Bold" FontSize="20" HorizontalOptions="Center"/>
-            
-            <Label Text="{Binding Name}" 
-                   Style="{StaticResource Headline}" />
 
+            <Label Text="{Binding Username}" FontAttributes="Bold" FontSize="20" HorizontalOptions="Center"/>
+            <Label Text="{Binding Name}" Style="{StaticResource Headline}" />
+
+            <!-- Normal Friend Action Button -->
+            <Button Text="{Binding FriendButtonText}"
+                    Command="{Binding FriendButtonCommand}"
+                    HorizontalOptions="Center"
+                    WidthRequest="200"
+                    Margin="0,10"
+                    IsVisible="{Binding ShowFriendButton}" />
+
+            <!-- Accept / Reject Buttons -->
+            <HorizontalStackLayout Spacing="12"
+                                   HorizontalOptions="Center"
+                                   IsVisible="{Binding ShowAcceptReject}">
+                <Button Text="✓"
+                        Command="{Binding AcceptCommand}"
+                        TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                        FontAttributes="Bold"
+                        CornerRadius="20"
+                        WidthRequest="40"
+                        HeightRequest="40"
+                        Padding="0" />
+
+                <Button Text="✕"
+                        Command="{Binding RejectCommand}"
+                        TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                        FontAttributes="Bold"
+                        CornerRadius="20"
+                        WidthRequest="40"
+                        HeightRequest="40"
+                        Padding="0" />
+            </HorizontalStackLayout>
 
             <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
                     StrokeThickness="1" Padding="12" StrokeShape="RoundRectangle 10">
