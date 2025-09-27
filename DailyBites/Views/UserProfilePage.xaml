@@ -51,13 +51,14 @@
                         Padding="0" />
             </HorizontalStackLayout>
 
-            <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
-                    StrokeThickness="1" Padding="12" StrokeShape="RoundRectangle 10">
-                <HorizontalStackLayout HorizontalOptions="Center">
-                    <Label Text="Friends: " FontAttributes="Bold" />
-                    <Label Text="{Binding FriendCount}" />
-                </HorizontalStackLayout>
-            </Border>
+            <!-- Friend Count as Button -->
+            <Button Text="{Binding FriendCount, StringFormat='Friends: {0}'}"
+                    Command="{Binding ViewFriendsCommand}"
+                    HorizontalOptions="Center"
+                    BackgroundColor="Transparent"
+                    TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                    FontAttributes="Bold"
+                    Padding="10" />
 
         </VerticalStackLayout>
     </ScrollView>

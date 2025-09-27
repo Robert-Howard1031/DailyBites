@@ -2,18 +2,14 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:DailyBites.ViewModels"
-             x:Class="DailyBites.Views.SearchPage"
-             Shell.NavBarIsVisible="False">
+             x:Class="DailyBites.Views.FriendsListPage"
+             Title="Friends">
 
     <VerticalStackLayout Padding="20" Spacing="15">
 
-        <SearchBar Placeholder="Search users…"
-                   Text="{Binding Query, Mode=TwoWay}"
-                   SearchCommand="{Binding SearchCommand}" />
-
-        <CollectionView ItemsSource="{Binding Results}"
+        <CollectionView ItemsSource="{Binding Friends}"
                         SelectionMode="Single"
-                        SelectedItem="{Binding SelectedUser, Mode=TwoWay}">
+                        SelectedItem="{Binding SelectedFriend, Mode=TwoWay}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
@@ -43,6 +39,7 @@
                                        TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
                             </VerticalStackLayout>
 
+                           
                         </Grid>
                     </Border>
                 </DataTemplate>

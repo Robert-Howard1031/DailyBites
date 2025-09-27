@@ -38,6 +38,7 @@ public static class MauiProgram
         builder.Services.AddTransient<UserProfileViewModel>();
         builder.Services.AddTransient<PersonalProfileViewModel>();
         builder.Services.AddTransient<RequestsViewModel>();
+        builder.Services.AddTransient<FriendsListViewModel>();
 
         builder.Services.AddTransient<SignupPage>();
         builder.Services.AddTransient<LoginPage>();
@@ -48,6 +49,7 @@ public static class MauiProgram
         builder.Services.AddTransient<UserProfilePage>();
         builder.Services.AddTransient<PersonalProfilePage>();
         builder.Services.AddTransient<RequestsPage>();
+        builder.Services.AddTransient<FriendsListPage>();
 
         return builder.Build();
     }

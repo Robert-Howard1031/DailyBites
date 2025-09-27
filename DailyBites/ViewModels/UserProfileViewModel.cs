@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Configuration;
 using System.Text.Json;
 using DailyBites.Services;
+using DailyBites.Views;
 
 namespace DailyBites.ViewModels;
 
@@ -15,6 +16,8 @@ public partial class UserProfileViewModel : BaseViewModel
 
     [ObservableProperty] 
     private string _uid = string.Empty;
+    [ObservableProperty]
+    private string _stack = string.Empty;
     [ObservableProperty] 
     private string _username = string.Empty;
     [ObservableProperty] 
@@ -193,4 +196,34 @@ public partial class UserProfileViewModel : BaseViewModel
             ShowAcceptReject = false;
         }
     }
+
+    [RelayCommand]
+    private async Task ViewFriends()
+    {
+        if (string.IsNullOrEmpty(Uid)) return;
+        if(Stack == "search") 
+        { 
+        await Shell.Current.GoToAsync(
+            $"//SearchPage/{nameof(FriendsListPage)}",
+            true,
+            new Dictionary<string, object>
+            {
+                ["uid"] = Uid,
+                ["stack"] = "search"
+            });
+        }
+        if (Stack == "personal")
+        {
+            await Shell.Current.GoToAsync(
+            $"//PersonalProfilePage/{nameof(FriendsListPage)}",
+            true,
+            new Dictionary<string, object>
+            {
+                ["uid"] = Uid,
+                ["stack"] = "personal"
+            });
+        }
+    }
+
+
 }

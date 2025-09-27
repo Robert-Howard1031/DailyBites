@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DailyBites.Services;
+using DailyBites.Views;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -20,6 +21,9 @@ public partial class PersonalProfileViewModel : BaseViewModel
     [ObservableProperty] private string _profilePicUrl = string.Empty;
     [ObservableProperty] private int _friendCount;
 
+    public IAsyncRelayCommand LoadCommand { get; }
+    public IAsyncRelayCommand ViewFriendsCommand { get; }
+
     public PersonalProfileViewModel(IConfiguration config, ISettingsService settingsService)
     {
         _config = config;
@@ -28,12 +32,11 @@ public partial class PersonalProfileViewModel : BaseViewModel
         // Get the current logged-in uid from settings
         _uid = _settingsService.Uid;
 
-        // Auto-load
         LoadCommand = new AsyncRelayCommand(LoadAsync);
+        ViewFriendsCommand = new AsyncRelayCommand(OnViewFriendsClicked);
+
         LoadCommand.Execute(null);
     }
-
-    public IAsyncRelayCommand LoadCommand { get; }
 
     private async Task LoadAsync()
     {
@@ -61,16 +64,31 @@ public partial class PersonalProfileViewModel : BaseViewModel
         Email = GetString("email");
         ProfilePicUrl = GetString("profilePicUrl");
 
-        // Safely calculate friend count
         if (fields.TryGetProperty("friends", out var friendsField) &&
             friendsField.TryGetProperty("arrayValue", out var arr) &&
             arr.TryGetProperty("values", out var vals))
         {
-            FriendCount = vals.EnumerateArray().Count(); // count actual values
+            FriendCount = vals.EnumerateArray().Count();
         }
         else
         {
             FriendCount = 0;
         }
     }
+
+    private async Task OnViewFriendsClicked()
+    {
+        if (string.IsNullOrEmpty(Uid)) return;
+
+        await Shell.Current.GoToAsync(
+            $"//PersonalProfilePage/{nameof(FriendsListPage)}",
+            true,
+            new Dictionary<string, object>
+            {
+                ["uid"] = Uid,
+                ["stack"] = "personal",
+            }
+        );
+    }
+
 }

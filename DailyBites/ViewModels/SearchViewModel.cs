@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using DailyBites.Models;
 using DailyBites.Services;
+using DailyBites.Views;
 using Microsoft.Extensions.Configuration;
 using System.Collections.ObjectModel;
 using System.Net.Http.Json;
@@ -113,7 +114,6 @@ public partial class SearchViewModel : BaseViewModel
                 FriendButtonText = "Add Friend"
             };
 
-            // 🚫 Skip self
             if (result.Uid == _settingsService.Uid)
                 continue;
 
@@ -125,7 +125,6 @@ public partial class SearchViewModel : BaseViewModel
                 }
                 else
                 {
-                    // 🔹 Check if YOU are inside THEIR friendRequests
                     var userUrl = $"https://firestore.googleapis.com/v1/projects/{projectId}/databases/(default)/documents/users/{result.Uid}";
                     var userRes = await _http.GetAsync(userUrl);
                     if (userRes.IsSuccessStatusCode)
@@ -170,7 +169,6 @@ public partial class SearchViewModel : BaseViewModel
         }
         else if (user.FriendButtonText == "Request Sent")
         {
-            // cancel pending request
             var ok = await _friendService.RejectFriendRequestAsync(user.Uid, _settingsService.Uid);
             if (ok) user.FriendButtonText = "Add Friend";
         }
@@ -179,7 +177,16 @@ public partial class SearchViewModel : BaseViewModel
     partial void OnSelectedUserChanged(UserResult? value)
     {
         if (value is null) return;
-        _ = Shell.Current.GoToAsync($"UserProfilePage?uid={Uri.EscapeDataString(value.Uid)}");
+
+        _ = Shell.Current.GoToAsync(
+            $"//SearchPage/{nameof(UserProfilePage)}",
+            true,
+            new Dictionary<string, object>
+            {
+                ["uid"] = value.Uid,
+                ["stack"] = "search"
+            });
+
         SelectedUser = null;
     }
 }

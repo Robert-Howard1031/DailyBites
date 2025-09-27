@@ -1,13 +1,12 @@
 using DailyBites.ViewModels;
-using Microsoft.Maui.Controls;
 
 namespace DailyBites.Views;
 
 [QueryProperty(nameof(Uid), "uid")]
 [QueryProperty(nameof(Stack), "stack")]
-public partial class UserProfilePage : ContentPage
+public partial class FriendsListPage : ContentPage
 {
-    private readonly UserProfileViewModel _vm;
+    private readonly FriendsListViewModel _vm;
 
     public string Uid
     {
@@ -20,7 +19,7 @@ public partial class UserProfilePage : ContentPage
         set => _vm.Stack = value;
     }
 
-    public UserProfilePage(UserProfileViewModel vm)
+    public FriendsListPage(FriendsListViewModel vm)
     {
         InitializeComponent();
         BindingContext = _vm = vm;
@@ -30,7 +29,7 @@ public partial class UserProfilePage : ContentPage
     {
         base.OnNavigatedTo(args);
 
-        if (BindingContext is UserProfileViewModel vm)
+        if (BindingContext is FriendsListViewModel vm)
         {
             _ = vm.LoadAsync();
         }
