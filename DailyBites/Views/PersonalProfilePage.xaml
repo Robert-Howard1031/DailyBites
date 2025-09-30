@@ -4,36 +4,53 @@
              x:Class="DailyBites.Views.PersonalProfilePage"
              Shell.NavBarIsVisible="False">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="24" Spacing="16">
+    <RefreshView Command="{Binding LoadCommand}" IsRefreshing="{Binding IsBusy}">
+        <ScrollView>
+            <VerticalStackLayout Padding="24" Spacing="16">
 
-            <!-- Profile picture -->
-            <Image WidthRequest="96" HeightRequest="96" Aspect="AspectFill" HorizontalOptions="Center"
-                   Source="{Binding ProfilePicUrl}">
-                <Image.Clip>
-                    <EllipseGeometry Center="48,48" RadiusX="48" RadiusY="48" />
-                </Image.Clip>
-            </Image>
+                <!-- Profile picture -->
+                <Image WidthRequest="96" HeightRequest="96" Aspect="AspectFill" HorizontalOptions="Center"
+                       Source="{Binding ProfilePicUrl}">
+                    <Image.Clip>
+                        <EllipseGeometry Center="48,48" RadiusX="48" RadiusY="48" />
+                    </Image.Clip>
+                </Image>
 
-            <!-- Username -->
-            <Label Text="{Binding Username}" 
-                   FontAttributes="Bold" 
-                   FontSize="20" 
-                   HorizontalOptions="Center"/>
+                <!-- Username -->
+                <Label Text="{Binding Username}" 
+                       FontAttributes="Bold" 
+                       FontSize="20" 
+                       HorizontalOptions="Center"/>
 
-            <!-- Full Name -->
-            <Label Text="{Binding Name}" 
-                   Style="{StaticResource Headline}" />
+                <!-- Full Name -->
+                <Label Text="{Binding Name}" 
+                       Style="{StaticResource Headline}" />
 
-            <!-- Friend count as a button -->
-            <Button Text="{Binding FriendCount, StringFormat='Friends: {0}'}"
-                    Command="{Binding ViewFriendsCommand}"
-                    HorizontalOptions="Center"
-                    BackgroundColor="Transparent"
-                    TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
-                    FontAttributes="Bold"
-                    Padding="10" />
+                <!-- Bio -->
+                <Label Text="{Binding Bio}" 
+                       FontSize="14"
+                       TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}"
+                       HorizontalOptions="Center" />
 
-        </VerticalStackLayout>
-    </ScrollView>
+                <!-- Friend count as a button -->
+                <Button Text="{Binding FriendCount, StringFormat='Friends: {0}'}"
+                        Command="{Binding ViewFriendsCommand}"
+                        HorizontalOptions="Center"
+                        BackgroundColor="Transparent"
+                        TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                        FontAttributes="Bold"
+                        Padding="10" />
+
+                <!-- Edit Profile -->
+                <Button Text="Edit Profile"
+                        Command="{Binding EditProfileCommand}"
+                        HorizontalOptions="Center"
+                        WidthRequest="200"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                        TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}"
+                        CornerRadius="20"
+                        Margin="0,20,0,0"/>
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
 </ContentPage>

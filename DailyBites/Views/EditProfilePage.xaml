@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DailyBites.Views.EditProfilePage"
+             Title="Edit Profile"
+             Shell.NavBarIsVisible="True">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="16">
+
+            <!-- Profile Pic Preview -->
+            <Image WidthRequest="120" HeightRequest="120" Aspect="AspectFill" HorizontalOptions="Center"
+                   Source="{Binding ProfilePicUrl}">
+                <Image.Clip>
+                    <EllipseGeometry Center="60,60" RadiusX="60" RadiusY="60"/>
+                </Image.Clip>
+            </Image>
+
+            <!-- Upload / Take Picture Buttons -->
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                <Button Text="Upload" Command="{Binding UploadPhotoCommand}" />
+                <Button Text="Take Photo" Command="{Binding TakePhotoCommand}" />
+            </HorizontalStackLayout>
+
+            <!-- Username -->
+            <Entry Text="{Binding Username}" 
+                   Placeholder="Username"
+                   FontSize="16"/>
+
+            <!-- Full Name -->
+            <Entry Text="{Binding Name}" 
+                   Placeholder="Full Name"
+                   FontSize="16"/>
+
+            <!-- Bio -->
+            <Editor Text="{Binding Bio}" 
+                    Placeholder="Write something about yourself..."
+                    AutoSize="TextChanges"
+                    FontSize="14"
+                    HeightRequest="100"/>
+
+            <!-- Save Button -->
+            <Button Text="Save"
+                    Command="{Binding SaveCommand}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                    TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}"
+                    CornerRadius="20"
+                    HeightRequest="45"
+                    HorizontalOptions="Center"
+                    WidthRequest="200"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
