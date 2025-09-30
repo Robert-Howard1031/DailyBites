@@ -72,6 +72,7 @@ public partial class PersonalProfileViewModel : BaseViewModel
             Username = GetString("username");
             Name = GetString("name");
             Email = GetString("email");
+            ProfilePicUrl = "https://firebasestorage.googleapis.com/v0/b/dailybites-ca068.firebasestorage.app/o/default.png?alt=media&token=328e63e9-cefd-4274-a80a-f06ac0bf522b";
             ProfilePicUrl = GetString("profilePicUrl");
             Bio = GetString("bio");
 

@@ -35,7 +35,7 @@ public partial class UserProfileViewModel : BaseViewModel
     private bool _showFriendButton = true;
     [ObservableProperty] 
     private bool _showAcceptReject = false;
-
+    public IAsyncRelayCommand LoadCommand { get; }
     public IAsyncRelayCommand FriendButtonCommand { get; }
     public IAsyncRelayCommand AcceptCommand { get; }
     public IAsyncRelayCommand RejectCommand { get; }
@@ -46,6 +46,7 @@ public partial class UserProfileViewModel : BaseViewModel
         _friendService = friendService;
         _settingsService = settingsService;
 
+        LoadCommand = new AsyncRelayCommand(LoadAsync);
         FriendButtonCommand = new AsyncRelayCommand(OnFriendButtonClicked);
         AcceptCommand = new AsyncRelayCommand(OnAcceptClicked);
         RejectCommand = new AsyncRelayCommand(OnRejectClicked);
@@ -53,6 +54,8 @@ public partial class UserProfileViewModel : BaseViewModel
 
     public async Task LoadAsync()
     {
+        try { 
+        IsBusy = true;
         if (string.IsNullOrWhiteSpace(Uid)) return;
 
         var projectId = _config["Firebase:ProjectId"];
@@ -154,6 +157,8 @@ public partial class UserProfileViewModel : BaseViewModel
         FriendButtonText = "Add Friend";
         ShowFriendButton = true;
         ShowAcceptReject = false;
+        }
+        finally{ IsBusy = false; }
     }
 
     private async Task OnFriendButtonClicked()

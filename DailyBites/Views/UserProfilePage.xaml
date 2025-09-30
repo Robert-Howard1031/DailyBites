@@ -4,33 +4,33 @@
              x:Class="DailyBites.Views.UserProfilePage"
              Shell.NavBarIsVisible="True"
              Shell.TabBarIsVisible="True">
+    <RefreshView Command="{Binding LoadCommand}" IsRefreshing="{Binding IsBusy}">
+        <ScrollView>
+            <VerticalStackLayout Padding="24" Spacing="16">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="24" Spacing="16">
-
-            <Image WidthRequest="96" HeightRequest="96" Aspect="AspectFill" HorizontalOptions="Center"
+                <Image WidthRequest="96" HeightRequest="96" Aspect="AspectFill" HorizontalOptions="Center"
                    Source="{Binding ProfilePicUrl}">
-                <Image.Clip>
-                    <EllipseGeometry Center="48,48" RadiusX="48" RadiusY="48" />
-                </Image.Clip>
-            </Image>
+                    <Image.Clip>
+                        <EllipseGeometry Center="48,48" RadiusX="48" RadiusY="48" />
+                    </Image.Clip>
+                </Image>
 
-            <Label Text="{Binding Username}" FontAttributes="Bold" FontSize="20" HorizontalOptions="Center"/>
-            <Label Text="{Binding Name}" Style="{StaticResource Headline}" />
+                <Label Text="{Binding Username}" FontAttributes="Bold" FontSize="20" HorizontalOptions="Center"/>
+                <Label Text="{Binding Name}" Style="{StaticResource Headline}" />
 
-            <!-- Normal Friend Action Button -->
-            <Button Text="{Binding FriendButtonText}"
+                <!-- Normal Friend Action Button -->
+                <Button Text="{Binding FriendButtonText}"
                     Command="{Binding FriendButtonCommand}"
                     HorizontalOptions="Center"
                     WidthRequest="200"
                     Margin="0,10"
                     IsVisible="{Binding ShowFriendButton}" />
 
-            <!-- Accept / Reject Buttons -->
-            <HorizontalStackLayout Spacing="12"
+                <!-- Accept / Reject Buttons -->
+                <HorizontalStackLayout Spacing="12"
                                    HorizontalOptions="Center"
                                    IsVisible="{Binding ShowAcceptReject}">
-                <Button Text="✓"
+                    <Button Text="✓"
                         Command="{Binding AcceptCommand}"
                         TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}"
                         BackgroundColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
@@ -40,7 +40,7 @@
                         HeightRequest="40"
                         Padding="0" />
 
-                <Button Text="✕"
+                    <Button Text="✕"
                         Command="{Binding RejectCommand}"
                         TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}"
                         BackgroundColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
@@ -49,10 +49,10 @@
                         WidthRequest="40"
                         HeightRequest="40"
                         Padding="0" />
-            </HorizontalStackLayout>
+                </HorizontalStackLayout>
 
-            <!-- Friend Count as Button -->
-            <Button Text="{Binding FriendCount, StringFormat='Friends: {0}'}"
+                <!-- Friend Count as Button -->
+                <Button Text="{Binding FriendCount, StringFormat='Friends: {0}'}"
                     Command="{Binding ViewFriendsCommand}"
                     HorizontalOptions="Center"
                     BackgroundColor="Transparent"
@@ -60,6 +60,7 @@
                     FontAttributes="Bold"
                     Padding="10" />
 
-        </VerticalStackLayout>
-    </ScrollView>
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
 </ContentPage>

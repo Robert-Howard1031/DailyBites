@@ -5,10 +5,8 @@ using Microsoft.Extensions.Configuration;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Net.Http.Headers;
-
-// MAUI Essentials namespaces
-using Microsoft.Maui.Media;    // MediaPicker
-using Microsoft.Maui.Storage;  // FilePicker
+using Microsoft.Maui.Media; 
+using Microsoft.Maui.Storage; 
 
 namespace DailyBites.ViewModels;
 
@@ -18,7 +16,6 @@ public partial class EditProfileViewModel : BaseViewModel
     private readonly ISettingsService _settingsService;
     private readonly HttpClient _http = new();
 
-    // Keep original username to skip availability check when unchanged
     private string? _originalUsername;
 
     [ObservableProperty] 
@@ -41,8 +38,6 @@ public partial class EditProfileViewModel : BaseViewModel
     {
         _config = config;
         _settingsService = settingsService;
-
-        // current user
         _uid = _settingsService.Uid;
 
         LoadCommand = new AsyncRelayCommand(LoadAsync);
@@ -82,7 +77,7 @@ public partial class EditProfileViewModel : BaseViewModel
     {
         if (string.IsNullOrWhiteSpace(Uid)) return;
 
-        // Validate username if changed
+        // Only check if username changed
         if (!string.Equals(Username, _originalUsername, StringComparison.OrdinalIgnoreCase))
         {
             var available = await IsUsernameAvailableAsync(Username);
@@ -109,8 +104,6 @@ public partial class EditProfileViewModel : BaseViewModel
             }
         };
 
-        // NOTE: PatchAsJsonAsync works in modern .NET. If your target lacks it,
-        // replace with an HttpRequestMessage(HttpMethod.Patch, url) and _http.SendAsync.
         var res = await _http.PatchAsJsonAsync(url, body);
         if (res.IsSuccessStatusCode)
         {
@@ -154,7 +147,6 @@ public partial class EditProfileViewModel : BaseViewModel
         if (!res.IsSuccessStatusCode) return false;
 
         using var json = await JsonDocument.ParseAsync(await res.Content.ReadAsStreamAsync());
-        // No "document" → username free
         return !json.RootElement.EnumerateArray().Any(e => e.TryGetProperty("document", out _));
     }
 
@@ -169,9 +161,8 @@ public partial class EditProfileViewModel : BaseViewModel
             });
 
             if (file == null) return;
-
             using var stream = await file.OpenReadAsync();
-            await UploadToFirebaseAsync(stream, $"{Uid}.jpg");
+            await UploadToFirebaseAsync(stream);
         }
         catch (Exception ex)
         {
@@ -195,9 +186,8 @@ public partial class EditProfileViewModel : BaseViewModel
             });
 
             if (photo == null) return;
-
             using var stream = await photo.OpenReadAsync();
-            await UploadToFirebaseAsync(stream, $"{Uid}.jpg");
+            await UploadToFirebaseAsync(stream);
         }
         catch (Exception ex)
         {
@@ -205,40 +195,54 @@ public partial class EditProfileViewModel : BaseViewModel
         }
     }
 
-    private async Task UploadToFirebaseAsync(Stream fileStream, string fileName)
+    private async Task UploadToFirebaseAsync(Stream fileStream)
     {
-        var projectId = _config["Firebase:ProjectId"];
-        var bucket = $"{projectId}.appspot.com";
-        var url = $"https://firebasestorage.googleapis.com/v0/b/{bucket}/o?uploadType=media&name=profilePics/{fileName}";
+        var bucket = "dailybites-ca068.firebasestorage.app";
+        var objectPath = $"profilePics/{Uid}.jpg";
+        var url = $"https://firebasestorage.googleapis.com/v0/b/{bucket}/o?uploadType=media&name={Uri.EscapeDataString(objectPath)}";
 
         using var content = new StreamContent(fileStream);
         content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
-
-        // If you have an ID token, uncomment:
-        // var token = _settingsService.IdToken; // if available in your app
-        // if (!string.IsNullOrEmpty(token))
-        //     _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var res = await _http.PostAsync(url, content);
         if (!res.IsSuccessStatusCode)
         {
             var err = await res.Content.ReadAsStringAsync();
-            await Application.Current.MainPage.DisplayAlert("Error", $"Upload failed:\n{err}", "OK");
+            await Application.Current.MainPage.DisplayAlert("Error", $"Upload failed:\n{res.StatusCode}\n{err}", "OK");
             return;
         }
 
-        using var json = await JsonDocument.ParseAsync(await res.Content.ReadAsStreamAsync());
-        if (json.RootElement.TryGetProperty("name", out var nameProp) &&
-            json.RootElement.TryGetProperty("downloadTokens", out var tokenProp))
-        {
-            var storedPath = nameProp.GetString() ?? $"profilePics/{fileName}";
-            var token = tokenProp.GetString() ?? string.Empty;
+        //  Add a cache-busting query (timestamp)
+        var cacheBuster = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        var downloadUrl =
+            $"https://firebasestorage.googleapis.com/v0/b/{bucket}/o/{Uri.EscapeDataString(objectPath)}?alt=media&cb={cacheBuster}";
 
-            ProfilePicUrl = $"https://firebasestorage.googleapis.com/v0/b/{bucket}/o/{Uri.EscapeDataString(storedPath)}?alt=media&token={token}";
-        }
-        else
+        // Update local binding
+        ProfilePicUrl = downloadUrl;
+
+        // Update Firestore immediately
+        var projectId = _config["Firebase:ProjectId"];
+        var docUrl = $"https://firestore.googleapis.com/v1/projects/{projectId}/databases/(default)/documents/users/{Uid}?updateMask.fieldPaths=profilePicUrl";
+
+        var body = new
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "Upload succeeded but no public URL returned.", "OK");
+            fields = new
+            {
+                profilePicUrl = new { stringValue = ProfilePicUrl }
+            }
+        };
+
+        var updateRes = await _http.PatchAsJsonAsync(docUrl, body);
+        if (!updateRes.IsSuccessStatusCode)
+        {
+            var err = await updateRes.Content.ReadAsStringAsync();
+            await Application.Current.MainPage.DisplayAlert("Error", $"ProfilePicUrl Firestore update failed:\n{err}", "OK");
+            return;
         }
+
+        await Application.Current.MainPage.DisplayAlert("Success", "Profile picture updated!", "OK");
     }
+
+
+
 }

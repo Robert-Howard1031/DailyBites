@@ -24,11 +24,12 @@
                         <Grid ColumnDefinitions="Auto,*,Auto" VerticalOptions="Center">
 
                             <!-- Profile Pic -->
-                            <Image Grid.Column="0"
-                                   WidthRequest="42"
-                                   HeightRequest="42"
-                                   Aspect="AspectFill"
-                                   Source="{Binding ProfilePicUrl}" />
+                            <Image Grid.Column="0" WidthRequest="48" HeightRequest="48" Aspect="AspectFill" HorizontalOptions="Center"
+                                   Source="{Binding ProfilePicUrl}">
+                                <Image.Clip>
+                                    <EllipseGeometry Center="24,24" RadiusX="24" RadiusY="24" />
+                                </Image.Clip>
+                            </Image>
 
                             <!-- User Info -->
                             <VerticalStackLayout Grid.Column="1"
